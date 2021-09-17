@@ -45,4 +45,5 @@ jobs:
           branch: "regenerate-operator-bundles"
           delete-branch: true
           title: "Operator Bundle Update"
-    
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
