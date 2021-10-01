@@ -7,9 +7,9 @@ set -e
 
 _BASEDIR=$(dirname "$0")
 
-_SPOKE_TOKEN=$(yq eval '.managedCluster.token' $_BASEDIR/values.yaml)
-_SPOKE_SERVER=$(yq eval '.managedCluster.server' $_BASEDIR/values.yaml)
-_SPOKE_KUBECONFIG=$(yq eval '.managedCluster.kubeConfig' $_BASEDIR/values.yaml)
+_SPOKE_TOKEN=$(yq eval '.managedCluster.token' $_BASEDIR/import-cluster/values.yaml)
+_SPOKE_SERVER=$(yq eval '.managedCluster.server' $_BASEDIR/import-cluster/values.yaml)
+_SPOKE_KUBECONFIG=$(yq eval '.managedCluster.kubeConfig' $_BASEDIR/import-cluster/values.yaml)
 
 
 if [[ -z "$_SPOKE_TOKEN" || -z "$_SPOKE_SERVER" ]]; then
@@ -20,12 +20,10 @@ if [[ -z "$_SPOKE_TOKEN" || -z "$_SPOKE_SERVER" ]]; then
     fi
 fi
 
-cp $_BASEDIR/values.yaml $_BASEDIR/hub-cluster/values.yaml
+resources=$(helm template hub $_BASEDIR/import-cluster)
 
-resources=$(helm template hub $_BASEDIR/hub-cluster)
-
-for filename in $_BASEDIR/hub-cluster/templates/*.yaml; do
+for filename in $_BASEDIR/import-cluster/templates/*.yaml; do
     filename=$(basename $filename)
-    output=$(helm template hub $_BASEDIR/hub-cluster -s templates/$filename)
+    output=$(helm template hub $_BASEDIR/import-cluster -s templates/$filename)
     echo "$output" | kubectl apply -f -
 done

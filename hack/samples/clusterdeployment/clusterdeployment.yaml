@@ -1,0 +1,19 @@
+apiVersion: hive.openshift.io/v1
+kind: ClusterDeployment
+metadata:
+  name: aws-cluster
+spec:
+  baseDomain: dev01.red-chesterfield.com
+  clusterName: demo-cd
+  platform:
+    aws:
+      credentialsSecretRef:
+        name: aws-creds
+      region: us-east-1
+  provisioning:
+    installConfigSecretRef:
+      name: installer-config-template
+    imageSetRef:
+      name: img4.8.4-x86-64-appsub
+  pullSecretRef:
+    name: ocp-pull-secret
